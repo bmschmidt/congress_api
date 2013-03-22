@@ -1,12 +1,14 @@
 # Bill IDs #
-### Bill IDs are a combination of the type of bill, the bill number, and the session of Congress a bill was introduced in. They are of the format: ###
+
+Bill IDs are a combination of the type of bill, the bill number, and the session of Congress a bill was introduced in. They are of the format:
 
 [type][number]-[session]
 
 For example, H.R. 4173 from the 111th Congress would be "hr4173-111".
 
 # Guaranteed Fields #
-### The only fields you can assume are present are: ###
+
+The only fields you can assume are present are:
 
 * bill_id
 * bill_type
@@ -25,13 +27,13 @@ In this case, as a convenience, we will create an "abbreviated" bill document wi
 In practice, Senate vote information include the official and short titles of the bill being voted upon, so for some abbreviated bills, the "official_title" and "short_title" fields may also be present.
 
 # Text Search Fields #
-### If the "search" parameter is passed to the API, a case-insensitive pattern match of the given string is applied to the following fields: ###
+If the "search" parameter is passed to the API, a case-insensitive pattern match of the given string is applied to the following fields:
+
 * short_title
 * official_title
 * popular_title
 * keywords
 * summary
-
 
 # Types of Bills #
 
@@ -106,7 +108,8 @@ In practice, Senate vote information include the official and short titles of th
 * **chamber**: Chamber the vote took place in. Either "house" or "senate".
 
 # committees #
-### A hash, keyed by committee ID, relating some basic information about the committee to what roles the committee had in relation to the bill. ###
+
+A hash, keyed by committee ID, relating some basic information about the committee to what roles the committee had in relation to the bill.
 
 * **activity**: An array of activities this committee has in relation to this bill.
 * **committee**: Basic information about the committee.
