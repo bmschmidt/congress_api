@@ -1,4 +1,14 @@
-# Bill IDs #
+# Download the Data #
+
+Simply run:
+
+```python
+python get_and_unzip_data.py
+```
+
+# About the Data #
+
+## Bill IDs ##
 
 Bill IDs are a combination of the type of bill, the bill number, and the session of Congress a bill was introduced in. They are of the format:
 
@@ -6,7 +16,7 @@ Bill IDs are a combination of the type of bill, the bill number, and the session
 
 For example, H.R. 4173 from the 111th Congress would be "hr4173-111".
 
-# Guaranteed Fields #
+## Guaranteed Fields ##
 
 The only fields you can assume are present are:
 
@@ -18,7 +28,7 @@ The only fields you can assume are present are:
 * chamber
 * abbreviated
 
-# Abbreviated bills #
+## Abbreviated bills ##
 
 Since information on new votes is published much more quickly than information on new bills, it's possible that for bills quickly introduced and voted upon, we may encounter a vote on a bill whose full information is not available.
 
@@ -26,7 +36,7 @@ In this case, as a convenience, we will create an "abbreviated" bill document wi
 
 In practice, Senate vote information include the official and short titles of the bill being voted upon, so for some abbreviated bills, the "official_title" and "short_title" fields may also be present.
 
-# Text Search Fields #
+## Text Search Fields ##
 If the "search" parameter is passed to the API, a case-insensitive pattern match of the given string is applied to the following fields:
 
 * short_title
@@ -35,7 +45,7 @@ If the "search" parameter is passed to the API, a case-insensitive pattern match
 * keywords
 * summary
 
-# Types of Bills #
+## Types of Bills ##
 
 * **hr**: House bills ("H.R.")
 * **hres**: House resolutions ("H.Res")
@@ -46,7 +56,7 @@ If the "search" parameter is passed to the API, a case-insensitive pattern match
 * **sjres**: Senate joint resolutions ("S.J.Res")
 * **scres**: Senate concurrent resolutions ("S.C.Res" or "S.Con.Res")
 
-# Fields #
+## Fields ##
 
 * **bill_id**: Unique ID. (See above list for how to construct the ID.)
 * **bill_type**: Type of bill. (See above list for what the types mean.)
@@ -91,13 +101,13 @@ If the "search" parameter is passed to the API, a case-insensitive pattern match
 * **enacted**: (boolean) Whether a bill has been enacted as law, through signature or a veto override.
 * **enacted_at**: (timestamp) When a bill was enacted, if it was.
 
-# actions #
+## actions ##
 
 * **text**: Text describing the action that occurred to the bill.
 * **acted_at**: (timestamp) Date or time the action occurred.
 * **type**: Type of action that occurred. Usually this is "action", but can be "vote", "vote2", "vote-aux", "signed", "topresident", "enacted", and potentially other unforeseen values.
 
-# passage_votes #
+## passage_votes ##
 
 * **result**: Result of the vote. Either "pass" or "fail".
 * **voted_at**: (timestamp) When the vote occurred.
@@ -107,7 +117,7 @@ If the "search" parameter is passed to the API, a case-insensitive pattern match
 * **roll_id**: If the vote was a roll call vote, the associated roll call ID.
 * **chamber**: Chamber the vote took place in. Either "house" or "senate".
 
-# committees #
+## committees ##
 
 A hash, keyed by committee ID, relating some basic information about the committee to what roles the committee had in relation to the bill.
 
