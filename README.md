@@ -8,6 +8,12 @@ python get_and_unzip_data.py
 
 This will download all the data, make directories, unzip the data and remove the zip files when it is all done. It uses the multiprocessing module to do everything in parallel, so it is pretty quick.
 
+
+# Query the Data #
+
+More coming soon...
+
+
 # About the Data #
 
 ## Bill IDs ##
