@@ -19,5 +19,5 @@ def getData(idx):
 
 if __name__ == '__main__':
     pool = Pool(processes=cpu_count())
-    pool.map(cleanfunc, range(93, 114))
+    pool.map(getData, range(93, 114))
     
