@@ -14,15 +14,15 @@ for datafile in datafiles:
     
         tmpdct = {}
         tmpdct['filename'] = data['bill_id']
-        tmpdct['chamber'] = data['bill_type']
+        tmpdct['chamber'] = [data['bill_type']]
         tmpdct['title'] = data['summary']['text'].encode('utf-8')
         tmpdct['official_title'] = data['official_title']
-        tmpdct['enacted'] = str(data['history']['enacted'])
-        tmpdct['vetoed'] = str(data['history']['vetoed'])
-        tmpdct['awaiting_signature'] = str(data['history']['awaiting_signature'])
-        tmpdct['status'] = data['status']
-        tmpdct['sponsor_state'] = data['sponsor']['state']
-        tmpdct['sponsor_name'] = data['sponsor']['name']
+        tmpdct['enacted'] = [str(data['history']['enacted'])]
+        tmpdct['vetoed'] = [str(data['history']['vetoed'])]
+        tmpdct['awaiting_signature'] = [str(data['history']['awaiting_signature'])]
+        tmpdct['status'] = [data['status']]
+        tmpdct['sponsor_state'] = [data['sponsor']['state']]
+        tmpdct['sponsor_name'] = [data['sponsor']['name']]
 
         tmpdct['cosponsors_state'] = [i['state'] for i in data['cosponsors']]
         tmpdct['cosponsors_name'] = [i['name'] for i in data['cosponsors']]
