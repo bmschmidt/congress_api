@@ -30,7 +30,7 @@ for datafile in datafiles:
         dt = datetools.parse(data['summary']['date'])
         tmpdct['date'] = '%s-%s-%s' % (int(dt.year+1), dt.month, dt.day)
 
-        url = 'http://www.govtrack.us/congress/bills/%s/%s' % (tmpdct['chamber'], datafile.split('/')[-2])
+        url = 'http://www.govtrack.us/congress/bills/%s/%s' % (data['bill_type'], datafile.split('/')[-2])
         tmpdct['searchstring'] = '<a href="%s" target="_blank">%s</a>' % (url, tmpdct['official_title'])
         meta.write('%s\n' % dumps(tmpdct))
         filepath = '../texts/raw/%s.txt' % tmpdct['filename']
