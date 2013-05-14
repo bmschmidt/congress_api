@@ -1,11 +1,17 @@
 from glob import glob
 from json import loads,dumps
 from pandas import datetools
+import subprocess
 
 datafiles = glob('./*/bills/hr/*/data.json')
 datafiles.extend(glob('./*/bills/s/*/data.json'))
 
-meta = open('../metadata/jsoncatalog.txt', 'w')
+subprocess.call(['mkdir', 'metadata'])
+subprocess.call(['mkdir', 'texts'])
+subprocess.call(['mkdir', 'texts/raw'])
+
+log = open('logs.txt', 'w')
+meta = open('metadata/jsoncatalog.txt', 'w')
 for datafile in datafiles:
     try:
         f = open(datafile, 'r')
@@ -33,10 +39,12 @@ for datafile in datafiles:
         url = 'http://www.govtrack.us/congress/bills/%s/%s' % (data['bill_type'], datafile.split('/')[-2])
         tmpdct['searchstring'] = '<a href="%s" target="_blank">%s</a>' % (url, tmpdct['official_title'])
         meta.write('%s\n' % dumps(tmpdct))
-        filepath = '../texts/raw/%s.txt' % tmpdct['filename']
+        filepath = 'texts/raw/%s.txt' % tmpdct['filename']
         f = open(filepath, 'w')
         f.write(tmpdct['title'])
         f.close()
     except:
-        print 'Parsing Failed: %s' % datafile
+        log.write('%s\n' % datafile)
         pass
+meta.close
+log.close()
