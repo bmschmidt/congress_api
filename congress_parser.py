@@ -1,50 +1,69 @@
-from glob import glob
-from json import loads,dumps
-from pandas import datetools
+import glob
+import json
+import multiprocessing
 import subprocess
 
-datafiles = glob('./*/bills/hr/*/data.json')
-datafiles.extend(glob('./*/bills/s/*/data.json'))
+datafiles = glob.glob('./*/bills/hr/*/data.json')
+datafiles.extend(glob.glob('./*/bills/s/*/data.json'))
 
 subprocess.call(['mkdir', 'metadata'])
 subprocess.call(['mkdir', 'texts'])
 subprocess.call(['mkdir', 'texts/raw'])
 
-log = open('logs.txt', 'w')
-meta = open('metadata/jsoncatalog.txt', 'w')
-for datafile in datafiles:
-    try:
-        f = open(datafile, 'r')
-        data = loads(f.read())
+url = 'http://www.govtrack.us/congress/bills'
+
+
+def ParseCongressFile(datafile):
+    js = json.load(open(datafile, 'r'))
+    if js['summary'] is not None and js['summary']['text'] is not None:
+        tmp = {}
+        # Build the metadata object
+        tmp['filename'] = js['bill_id']
+        if 'short_title' in js and js['short_title'] is not None:
+            tmp['title'] = js['short_title'].encode('utf-8')
+        else:
+            tmp['title'] = js['official_title'].encode('utf-8')
+        tmp['chamber'] = js['bill_type']
+        tmp['enacted'] = str(js['history']['enacted'])
+        tmp['awaiting_signature'] = str(js['history']['awaiting_signature'])
+        tmp['vetoed'] = str(js['history']['vetoed'])
+        tmp['status'] = js['status']
+        tmp['subjects'] = js['subjects']
+        if js['subjects_top_term'] is not None:
+            tmp['main_subject'] = js['subjects_top_term']
+        else:
+            pass
+        tmp['sponsor_state'] = js['sponsor']['state']
+        tmp['sponsor_name'] = js['sponsor']['name']
+        tmp['sponsor_title'] = js['sponsor']['title']
+        tmp['thomas_id'] = js['sponsor']['thomas_id']
+        tmp['num_cosponsors'] = len(js['cosponsors'])
+        tmp['date'] = js['summary']['date']
+        # Create HTML for the searchstring variable
+        link = '%s/%s/%s' % (url, js['congress'], js['bill_id'].split('-')[0])
+        html = '%s | <a href="%s" target="_blank">View</a>' % (tmp['title'], link)
+        tmp['searchstring'] = html
+        # Write the summary text to its own .txt file
+        f = open('texts/raw/%s.txt' % tmp['filename'], 'w')
+        f.write(js['summary']['text'].encode('utf-8'))
         f.close()
-    
-        tmpdct = {}
-        tmpdct['filename'] = data['bill_id']
-        tmpdct['chamber'] = [data['bill_type']]
-        tmpdct['title'] = data['summary']['text'].encode('utf-8')
-        tmpdct['official_title'] = data['official_title']
-        tmpdct['enacted'] = [str(data['history']['enacted'])]
-        tmpdct['vetoed'] = [str(data['history']['vetoed'])]
-        tmpdct['awaiting_signature'] = [str(data['history']['awaiting_signature'])]
-        tmpdct['status'] = [data['status']]
-        tmpdct['sponsor_state'] = [data['sponsor']['state']]
-        tmpdct['sponsor_name'] = [data['sponsor']['name']]
+        # Return the metadata
+        return tmp
+    else:
+        return None
 
-        tmpdct['cosponsors_state'] = [i['state'] for i in data['cosponsors']]
-        tmpdct['cosponsors_name'] = [i['name'] for i in data['cosponsors']]
+if __name__ == '__main__':
+    pool = multiprocessing.Pool()
+    metadata = pool.map(ParseCongressFile, datafiles)
+    pool.close()
 
-        dt = datetools.parse(data['summary']['date'])
-        tmpdct['date'] = '%s-%s-%s' % (int(dt.year+1), dt.month, dt.day)
+    print 'Parsing complete. Creating jsoncatalog.txt file...'
+    meta = open('metadata/jsoncatalog.txt', 'w')
+    for jsonobj in metadata:
+        if jsonobj is not None:
+            meta.write('%s\n' % json.dumps(jsonobj))
+    meta.close()
 
-        url = 'http://www.govtrack.us/congress/bills/%s/%s' % (data['bill_type'], datafile.split('/')[-2])
-        tmpdct['searchstring'] = '<a href="%s" target="_blank">%s</a>' % (url, tmpdct['official_title'])
-        meta.write('%s\n' % dumps(tmpdct))
-        filepath = 'texts/raw/%s.txt' % tmpdct['filename']
-        f = open(filepath, 'w')
-        f.write(tmpdct['title'])
-        f.close()
-    except:
-        log.write('%s\n' % datafile)
-        pass
-meta.close
-log.close()
+    print 'Cleaning up...'
+    for folder in range(93, 114):
+        subprocess.call(['rm', '-rf', str(folder)])
