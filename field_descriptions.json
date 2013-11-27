@@ -1,0 +1,16 @@
+[
+    {"field":"date","datatype":"time","type":"numeric","unique":true,"derived":[{"resolution":"month"}, {"resolution":"year"}]},
+    {"field":"searchstring","datatype":"searchstring","type":"text","unique":true},
+    {"field":"chamber","datatype":"categorical","type":"text","unique":true},
+    {"field":"awaiting_signature","datatype":"categorical","type":"text","unique":true},
+    {"field":"enacted","datatype":"categorical","type":"text","unique":true},
+    {"field":"vetoed","datatype":"categorical","type":"text","unique":true},
+    {"field":"status","datatype":"categorical","type":"text","unique":true},
+    {"field":"main_subject","datatype":"categorical","type":"text","unique":true},
+    {"field":"subjects","datatype":"categorical","type":"text","unique":false},
+    {"field":"sponsor_state","datatype":"categorical","type":"text","unique":true},
+    {"field":"sponsor_name","datatype":"categorical","type":"text","unique":true},
+    {"field":"sponsor_title","datatype":"categorical","type":"text","unique":true},
+    {"field":"num_cosponsors","datatype":"categorical","type":"integer","unique":true},
+    {"field":"thomas_id","datatype":"etc","type":"integer","unique":true}
+]
