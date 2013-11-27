@@ -7,6 +7,7 @@ datafiles = glob.glob('./*/bills/hr/*/data.json')
 datafiles.extend(glob.glob('./*/bills/s/*/data.json'))
 
 subprocess.call(['mkdir', 'metadata'])
+subprocess.call(['mv', 'field_descriptions.json', 'metadata/'])
 subprocess.call(['mkdir', 'texts'])
 subprocess.call(['mkdir', 'texts/raw'])
 
