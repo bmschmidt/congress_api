@@ -1,4 +1,4 @@
-This repo is used to fetch and parse some data used as a demo for building the MySQL database behind a [Bookworm](http://bookworm.culturomics.org) using [Presidio](https://github.com/bmschmidt/Presidio). The data consists of summaries of bills in US Congress and the corresponding metadata for each bill.
+This repo is used to fetch and parse data used as a demo for building the MySQL database behind a [Bookworm](http://bookworm.culturomics.org) using [Presidio](https://github.com/bmschmidt/Presidio). The data consists of summaries of bills in US Congress and the corresponding metadata for each bill.
 
 # Download the Data #
 
