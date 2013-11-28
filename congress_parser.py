@@ -1,3 +1,4 @@
+import datetime
 import glob
 import json
 import multiprocessing
@@ -39,7 +40,9 @@ def ParseCongressFile(datafile):
         tmp['sponsor_title'] = js['sponsor']['title']
         tmp['thomas_id'] = js['sponsor']['thomas_id']
         tmp['num_cosponsors'] = len(js['cosponsors'])
-        tmp['date'] = js['summary']['date']
+        # For some reason the dates are always off by a year in the GUI, so this is a hard coded fix.
+        dt = datetime.datetime.strptime(js['summary']['date'], '%Y-%m-%d')
+        tmp['date'] = '%s-%s-%s' % (dt.year+1, dt.month, dt.day)
         # Create HTML for the searchstring variable
         link = '%s/%s/%s' % (url, js['congress'], js['bill_id'].split('-')[0])
         html = '%s | <a href="%s" target="_blank">View</a>' % (tmp['title'], link)
