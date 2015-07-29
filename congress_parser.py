@@ -3,16 +3,7 @@ import json
 import multiprocessing
 import subprocess
 
-datafiles = glob.glob('./*/bills/hr/*/data.json')
-datafiles.extend(glob.glob('./*/bills/s/*/data.json'))
-
-subprocess.call(['mkdir', 'metadata'])
-subprocess.call(['mv', 'field_descriptions.json', 'metadata/'])
-subprocess.call(['mkdir', 'texts'])
-subprocess.call(['mkdir', 'texts/raw'])
-
 url = 'http://www.govtrack.us/congress/bills'
-
 
 def ParseCongressFile(datafile):
     js = json.load(open(datafile, 'r'))
@@ -44,27 +35,38 @@ def ParseCongressFile(datafile):
         link = '%s/%s/%s' % (url, js['congress'], js['bill_id'].split('-')[0])
         html = '<a href="%s" target="_blank">Read</a> | %s' % (link, tmp['title'])
         tmp['searchstring'] = html
-        # Write the summary text to its own .txt file
-        f = open('texts/raw/%s.txt' % tmp['filename'], 'w')
-        f.write(js['summary']['text'].encode('utf-8'))
-        f.close()
+        # Write the summary text to input.txt in tab-delimited-format.
+        try:
+            textline = tmp['filename'] + "\t" + js['summary']['text'].replace("\n"," ").replace("\t"," ")
+        except UnicodeError:
+            print js['summary']['text'] 
+            raise
         # Return the metadata
-        return tmp
+        return (textline.encode("utf-8"),json.dumps(tmp))
     else:
-        return None
+        return (None,None)
 
 if __name__ == '__main__':
+    datafiles = glob.glob('./*/bills/hr/*/data.json')
+    datafiles.extend(glob.glob('./*/bills/s/*/data.json'))
+
     pool = multiprocessing.Pool()
     metadata = pool.map(ParseCongressFile, datafiles)
     pool.close()
 
     print 'Parsing complete. Creating jsoncatalog.txt file...'
-    meta = open('metadata/jsoncatalog.txt', 'w')
-    for jsonobj in metadata:
-        if jsonobj is not None:
-            meta.write('%s\n' % json.dumps(jsonobj))
-    meta.close()
+    meta = open('jsoncatalog.txt', 'w')
+    fulltext = open('input.txt',"w")
 
+    for textline,jsonobj in metadata:
+        if jsonobj is not None:
+            meta.write('%s\n' % jsonobj)
+            fulltext.write(textline + "\n")
+    meta.close()
+    fulltext.close()
+
+    """
     print 'Cleaning up...'
     for folder in range(93, 114):
         subprocess.call(['rm', '-rf', str(folder)])
+    """
